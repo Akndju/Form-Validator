@@ -26,17 +26,46 @@ function checkRequired(inputArr) {
   });
 }
 
+function checkPasswordMatch(input1, input2) {
+  if (input1.value !== input2.value) {
+    showError(password2, 'Passwords do not match');
+  } else {
+    showSuccess(input1, input2);
+  }
+}
+
+function checkLength(input, min, max) {
+  if (input.value.length < min) {
+    showError(
+      input,
+      `${getInputName(input)} must be at least ${min} characters`
+    );
+  } else if (input.value.length > max) {
+    showError(
+      input,
+      `${getInputName(input)} must not be more than ${max} characters`
+    );
+  }
+}
+
 function getInputName(entry) {
   return entry.id.charAt(0).toUpperCase() + entry.id.slice(1);
 }
 
-function isValidEmail(email) {
+function isValidEmail(input) {
   const regExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return regExp.test(String(email).toLowerCase());
+  if (regExp.test(input.value.trim())) {
+    showSuccess(input);
+  } else {
+    showError(input, 'Email is not valid');
+  }
 }
 
 form.addEventListener('submit', function (e) {
   e.preventDefault();
 
   checkRequired([username, email, password, password2]);
+  checkLength(password, 6, 15);
+  isValidEmail(email);
+  checkPasswordMatch(password, password2);
 });
